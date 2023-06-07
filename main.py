@@ -1,16 +1,23 @@
-# This is a sample Python script.
+import win32com.client as os  # this fix for all audio output
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import requests
+import json
 
+speak = os.Dispatch("SAPI.SpVoice")  # this is requires for audio
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl
+city = input("Enter the name of the city:")
 
+url = f"https://api.weatherapi.com/v1/current.json?key=b13989793f184149a91141538230103&q={city}"
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+r = requests.get(url)
+# print(r.text)
+# print(type(r.text))
+wdic = json.loads(r.text)
+print(f"your city '{city}' temperature is:", wdic["current"]["temp_c"])
+w = wdic["current"]["temp_c"]
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+speak.Speak(f"The current weather in {city} is {w} degrees")
+
+# make by myself
+z = wdic["location"]["localtime"]
+speak.Speak(f"The current weather in {city}  time is {z}")
